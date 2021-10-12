@@ -4,6 +4,7 @@
 
 #pragma once
 #include <opencv2/core.hpp>
+#include <opencv2/videoio.hpp>
 
 // COpenCV4Dlg dialog
 class COpenCV4Dlg : public CDialogEx
@@ -38,7 +39,7 @@ public:
 	bool mShowImage;
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnOptionsCalibrate();
-	cv::Mat mOriginalFrame, imageOption;
+	cv::Mat mOriginalFrame, imageOption, lastFrame;
 	static void mouseEvent(int Event, int x, int y, int flags, void * param);
 
 	
@@ -82,4 +83,19 @@ public:
 	afx_msg void OnOptionsShowcircle();
 	afx_msg void OnOptionsHidecircles();
 	afx_msg void OnOptionsExit();
+	cv::VideoCapture cap;
+	afx_msg void OnBnClickedLoadVideo();
+	afx_msg void OnBnClickedButton5();
+	bool showVideo;
+	afx_msg void OnBnClickedStopVideo();
+	static UINT threadProc(LPVOID pParam);
+	CString m_fileLoad;
+	int m_test;
+	afx_msg void OnBnClickedButtonFit();
+	int m_startThread;
+	afx_msg void OnClose();
+//	afx_msg void OnMove(int x, int y);
+//	afx_msg void OnMoving(UINT fwSide, LPRECT pRect);
+//	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 };

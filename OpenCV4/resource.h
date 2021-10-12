@@ -6,9 +6,9 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_OPENCV4_DIALOG              102
-#define IDR_MAINFRAME                   134
-#define IDR_MENU1                       130
 #define IDI_ICON1                       128
+#define IDR_MENU1                       130
+#define IDR_MAINFRAME                   134
 #define IDC_DEBUG                       1002
 #define IDC_BUTTON1                     1003
 #define IDC_DEBUG2                      1004
@@ -23,6 +23,13 @@
 #define IDC_BUTTON2                     1014
 #define IDC_RADIO3                      1015
 #define IDC_TVAL                        1016
+#define IDC_BUTTON3                     1018
+#define IDC_BUTTON4                     1019
+#define IDC_BUTTON5                     1020
+#define IDC_BUTTON6                     1021
+#define IDC_LOAD                        1022
+#define IDC_IMG                         1023
+#define IDC_LOAD2                       1024
 #define ID_OPTIONS_CALIBRATE            32771
 #define ID_OPTIONS_SHOWCIRCLE           32772
 #define ID_OPTIONS_HIDECIRCLES          32773
@@ -34,7 +41,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1018
+#define _APS_NEXT_CONTROL_VALUE         1024
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

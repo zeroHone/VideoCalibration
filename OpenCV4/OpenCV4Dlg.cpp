@@ -70,6 +70,7 @@ COpenCV4Dlg::COpenCV4Dlg(CWnd* pParent /*=nullptr*/)
 	, m_imageType(0)
 	
 	, m_tVal(_T(""))
+	, m_fileLoad(_T(""))
 {
 	//m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
@@ -92,6 +93,7 @@ void COpenCV4Dlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_TVAL, m_tVal);
 	DDX_Control(pDX, IDC_THRESH, m_thresholdValue);
+	DDX_Text(pDX, IDC_LOAD, m_fileLoad);
 }
 
 BEGIN_MESSAGE_MAP(COpenCV4Dlg, CDialogEx)
@@ -112,6 +114,15 @@ BEGIN_MESSAGE_MAP(COpenCV4Dlg, CDialogEx)
 	ON_COMMAND(ID_OPTIONS_SHOWCIRCLE, &COpenCV4Dlg::OnOptionsShowcircle)
 	ON_COMMAND(ID_OPTIONS_HIDECIRCLES, &COpenCV4Dlg::OnOptionsHidecircles)
 	ON_COMMAND(ID_OPTIONS_EXIT, &COpenCV4Dlg::OnOptionsExit)
+	ON_BN_CLICKED(IDC_BUTTON3, &COpenCV4Dlg::OnBnClickedLoadVideo)
+	ON_BN_CLICKED(IDC_BUTTON5, &COpenCV4Dlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &COpenCV4Dlg::OnBnClickedStopVideo)
+	ON_BN_CLICKED(IDC_BUTTON4, &COpenCV4Dlg::OnBnClickedButtonFit)
+	ON_WM_CLOSE()
+//	ON_WM_MOVE()
+//	ON_WM_MOVING()
+//	ON_WM_WINDOWPOSCHANGED()
+ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -179,8 +190,14 @@ BOOL COpenCV4Dlg::OnInitDialog()
 	m_ctrlCombo.SetCurSel(0);
 	m_areaValue = "-";
 	circleMove = 0;
+	m_fileLoad = "---";
+
 	UpdateData(false);
 	showCircle = false;
+	m_startThread = 1;
+	AfxBeginThread(threadProc, LPVOID(this));
+	//SetTimer(1234, 333, 0);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -223,9 +240,18 @@ void COpenCV4Dlg::OnPaint()
 	}
 	else
 	{
+		if (~lastFrame.empty()) {
+			//cv::imshow("Image", frame);
+			//cv::waitKey(5);
+			DisplayImage(lastFrame, 1023);
+		}
 		CDialogEx::OnPaint();
 	}
-
+	//if (~lastFrame.empty() && showVideo) {
+	//	cv::imshow("Image", lastFrame);
+	//	cv::waitKey(20);
+	//}
+	//ssageBox("OnPaint", "OnPaint", MB_OK);
 
 }
 
@@ -251,21 +277,21 @@ void COpenCV4Dlg::DisplayImage(cv::Mat& img, int IDC)
 {
 	// TODO: Add your implementation code here.
 		// TODO: Add your control notification handler code here
-	//CDC* pDC = GetDlgItem(IDC_PIC)->GetDC();
-	//HDC hDC = pDC->GetSafeHdc();
-	//
-	//using namespace cv;
-	//
+	CDC* pDC = GetDlgItem(IDC)->GetDC();
+	HDC hDC = pDC->GetSafeHdc();
+	
+	using namespace cv;
+	
 
-	//IplImage* image = &cvIplImage(img);
-	//CRect rect;
-	//CvvImage imgP;
-	//imgP.CopyOf(image);
+	IplImage* image = &cvIplImage(img);
+	CRect rect;
+	CvvImage imgP;
+	imgP.CopyOf(image);
 
-	//GetDlgItem(IDC)->GetClientRect(&rect);
-	//imgP.DrawToHDC(hDC, &rect);
-	//ReleaseDC(pDC);
-	//imgP.Destroy();
+	GetDlgItem(IDC)->GetClientRect(&rect);
+	imgP.DrawToHDC(hDC, &rect);
+	ReleaseDC(pDC);
+	imgP.Destroy();
 }
 
 
@@ -274,77 +300,77 @@ void COpenCV4Dlg::DisplayImage(cv::Mat& img, int IDC)
 
 void COpenCV4Dlg::OnBnClickedStop()
 {
-	cv::Mat frame, temp1,temp2;
-	uchar* ptr;
-	CString message;
-	UpdateData(true);
-	//mOriginalFrame.copyTo(imageOption);
+	//cv::Mat frame, temp1,temp2;
+	//uchar* ptr;
+	//CString message;
+	//UpdateData(true);
+	////mOriginalFrame.copyTo(imageOption);
 
-	if (!mOriginalFrame.empty()) {
-	if (m_imageType == 1) {
-		cv::Canny(mOriginalFrame, frame, threshold1, threshold2, kernelSize);
-		cv::cvtColor(frame, imageOption, CV_GRAY2BGR);
-		
-		
-		//		cv::threshold(frame, outPut, threshold2, 255, CV_THRESH_BINARY);
-		
-	}
-	else if(m_imageType == 2){
-	
-		cv::cvtColor(mOriginalFrame, temp1, CV_BGR2GRAY);
-		cv::threshold(temp1, temp2, thresholdValue, 255, cv::THRESH_BINARY);
-		cv::cvtColor(temp2, imageOption, CV_GRAY2BGR);
-		
+	//if (!mOriginalFrame.empty()) {
+	//if (m_imageType == 1) {
+	//	cv::Canny(mOriginalFrame, frame, threshold1, threshold2, kernelSize);
+	//	cv::cvtColor(frame, imageOption, CV_GRAY2BGR);
+	//	
+	//	
+	//	//		cv::threshold(frame, outPut, threshold2, 255, CV_THRESH_BINARY);
+	//	
+	//}
+	//else if(m_imageType == 2){
+	//
+	//	cv::cvtColor(mOriginalFrame, temp1, CV_BGR2GRAY);
+	//	cv::threshold(temp1, temp2, thresholdValue, 255, cv::THRESH_BINARY);
+	//	cv::cvtColor(temp2, imageOption, CV_GRAY2BGR);
+	//	
 
-		
-	}
-	else {
-		mOriginalFrame.copyTo(imageOption);
+	//	
+	//}
+	//else {
+	//	mOriginalFrame.copyTo(imageOption);
 
-	}
-	/* 
-	int x1 = startPoint.x;
-	int y1 = startPoint.y;
-	int x2 = endPoint.x;
-	int y2 = endPoint.y;
-	cv::Mat cannyEdge;
-	cv::Canny(mOriginalFrame, cannyEdge, threshold1, threshold2, kernelSize);
-	if (x1 < x2) {
-		for (int x = x1; x <= x2; x++) {
-
-
-
-
-		}
-	}
-	else if (x2 > x1) {
-		for (int x = x1; x <= x2; x++) {
+	//}
+	///* 
+	//int x1 = startPoint.x;
+	//int y1 = startPoint.y;
+	//int x2 = endPoint.x;
+	//int y2 = endPoint.y;
+	//cv::Mat cannyEdge;
+	//cv::Canny(mOriginalFrame, cannyEdge, threshold1, threshold2, kernelSize);
+	//if (x1 < x2) {
+	//	for (int x = x1; x <= x2; x++) {
 
 
 
 
-		}
-	}
-	else {
-	
-	
-	
-	
-	}*/
-	
-	}
+	//	}
+	//}
+	//else if (x2 > x1) {
+	//	for (int x = x1; x <= x2; x++) {
 
-	imageOption.copyTo(temp1);
 
-	if (showCircle) {
-		cv::circle(temp1, cv::Point(startPoint.x, startPoint.y), 5, cv::Scalar(0, 255, 0), 2);
-		cv::line(temp1, cv::Point(startPoint.x, startPoint.y), cv::Point(endPoint.x, endPoint.y), cv::Scalar(0, 0, 255), 2);
-		cv::circle(temp1, cv::Point(endPoint.x, endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
 
-	}else
-	cv::line(temp1, cv::Point(startPoint.x, startPoint.y), cv::Point(endPoint.x, endPoint.y), cv::Scalar(0, 0, 255),2);
 
-	imshow("Image", temp1);
+	//	}
+	//}
+	//else {
+	//
+	//
+	//
+	//
+	//}*/
+	//
+	//}
+
+	//imageOption.copyTo(temp1);
+
+	//if (showCircle) {
+	//	cv::circle(temp1, cv::Point(startPoint.x, startPoint.y), 5, cv::Scalar(0, 255, 0), 2);
+	//	cv::line(temp1, cv::Point(startPoint.x, startPoint.y), cv::Point(endPoint.x, endPoint.y), cv::Scalar(0, 0, 255), 2);
+	//	cv::circle(temp1, cv::Point(endPoint.x, endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
+
+	//}else
+	//cv::line(temp1, cv::Point(startPoint.x, startPoint.y), cv::Point(endPoint.x, endPoint.y), cv::Scalar(0, 0, 255),2);
+
+	//imshow("Image", temp1);
 	}
 
 
@@ -416,6 +442,11 @@ void COpenCV4Dlg::mouseEvent(int Event, int x, int y, int flags, void * params)
 void COpenCV4Dlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
+
+
+	//m_fileLoad.Format("Value is %d", m_test);
+	//UpdateData(false);
+
 
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -660,13 +691,13 @@ void COpenCV4Dlg::OnBnClickedRadioCircle()
 void COpenCV4Dlg::OnOptionsShowcircle()
 {
 	// TODO: Add your command handler code here
-	cv::Mat frame;
-	imageOption.copyTo(frame);
-	cv::line(frame, startPoint, endPoint, cv::Scalar(0, 0, 255), 2);
-	cv::circle(frame, cv::Point(startPoint.x, startPoint.y), 5, cv::Scalar(0, 255, 0), 2);
-	cv::circle(frame, cv::Point(endPoint.x, endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
+	//cv::Mat frame;
+	//imageOption.copyTo(frame);
+	//cv::line(frame, startPoint, endPoint, cv::Scalar(0, 0, 255), 2);
+	//cv::circle(frame, cv::Point(startPoint.x, startPoint.y), 5, cv::Scalar(0, 255, 0), 2);
+	//cv::circle(frame, cv::Point(endPoint.x, endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
 	showCircle = true;
-	imshow("Image", frame);
+	//imshow("Image", frame);
 
 }
 
@@ -676,12 +707,12 @@ void COpenCV4Dlg::OnOptionsHidecircles()
 	// TODO: Add your command handler code here
 
 	showCircle = false;
-	cv::Mat frame;
-	imageOption.copyTo(frame);
-	cv::line(frame, startPoint, endPoint, cv::Scalar(0, 0, 255), 2);
-	
-	
-	imshow("Image", frame);
+	//cv::Mat frame;
+	//imageOption.copyTo(frame);
+	//cv::line(frame, startPoint, endPoint, cv::Scalar(0, 0, 255), 2);
+	//
+	//
+	////imshow("Image", frame);
 
 
 }
@@ -690,5 +721,202 @@ void COpenCV4Dlg::OnOptionsHidecircles()
 void COpenCV4Dlg::OnOptionsExit()
 {
 	// TODO: Add your command handler code here
+	OnClose();
 	OnOK();
+}
+
+
+void COpenCV4Dlg::OnBnClickedLoadVideo()
+{
+	CFileDialog m_ldFile(true);
+	int key;
+	cv::Mat frame;
+
+	if (m_ldFile.DoModal() == IDOK) {
+		// TODO: Add your control notification handler code here
+		CString filePath = m_ldFile.GetPathName();
+		std::string PathOfFile((char*)filePath.GetBuffer(), filePath.GetLength());
+
+		//temp = cv::imread(PathOfFile);
+		//cv::cvtColor(temp, mOriginalFrame, cv::COLOR_GRAY2BGR);
+		cap.open(PathOfFile);
+		if (cap.isOpened()) {
+			cap >> frame;
+		startPoint.x = round(frame.cols / 2 - 50);
+		endPoint.x = round(frame.cols / 2 + 50);
+		startPoint.y = round(frame.rows / 2);
+		endPoint.y = startPoint.y;
+		}
+	}
+	m_fileLoad.Format("File Loaded");
+	UpdateData(false);
+
+
+}
+
+
+
+
+
+
+
+void COpenCV4Dlg::OnBnClickedButton5()// Start
+{
+	// TODO: Add your control notification handler code here
+	showVideo = 1;
+
+	//obj->cap >> frame;
+	//cv::imshow("Image", frame);
+	
+	
+
+}
+
+
+void COpenCV4Dlg::OnBnClickedStopVideo()
+{
+	// TODO: Add your control notification handler code here
+	showVideo = 0;
+
+}
+
+
+UINT COpenCV4Dlg::threadProc(LPVOID param)
+{
+	// TODO: Add your implementation code here.
+	COpenCV4Dlg* obj = (COpenCV4Dlg*)param;
+	
+
+	cv::Mat frame, temp1, temp2;
+
+			while (obj->m_startThread) {
+				if (obj->cap.isOpened() && obj->showVideo) {
+					obj->cap >> frame;
+					frame.copyTo(obj->lastFrame);
+				
+					if (~frame.empty()) {
+	
+						
+							if (obj->m_imageType == 1) {
+								cv::Canny(obj->lastFrame,temp1, obj->threshold1, obj->threshold2, obj->kernelSize);
+								cv::cvtColor(temp1, obj->imageOption, CV_GRAY2BGR);
+
+
+								//		cv::threshold(frame, outPut, threshold2, 255, CV_THRESH_BINARY);
+
+							}
+							else if (obj->m_imageType == 2) {
+
+								cv::cvtColor(obj->lastFrame, temp1, CV_BGR2GRAY);
+								cv::threshold(temp1, temp2, obj->thresholdValue, 255, cv::THRESH_BINARY);
+								cv::cvtColor(temp2, obj->imageOption, CV_GRAY2BGR);
+
+
+
+							}
+							else {
+								obj->lastFrame.copyTo(obj->imageOption);
+
+							}
+
+
+				
+
+						obj->imageOption.copyTo(temp1);
+
+						if (obj->showCircle) {
+							cv::circle(temp1, cv::Point(obj->startPoint.x, obj->startPoint.y), 5, cv::Scalar(0, 255, 0), 2);
+							cv::line(temp1, cv::Point(obj->startPoint.x, obj->startPoint.y), cv::Point(obj->endPoint.x, obj->endPoint.y), cv::Scalar(0, 0, 255), 2);
+							cv::circle(temp1, cv::Point(obj->endPoint.x, obj->endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
+
+						}
+						else
+							cv::line(temp1, cv::Point(obj->startPoint.x, obj->startPoint.y), cv::Point(obj->endPoint.x, obj->endPoint.y), cv::Scalar(0, 0, 255), 2);
+
+						
+						//**************************************
+					}
+				}
+			//obj->cap >> frame;
+			//cv::imshow("Image", frame);
+				obj->DisplayImage(temp1, 1023);
+			Sleep(50);
+			
+			
+			
+
+			}
+	
+	return TRUE;
+	}
+
+
+
+void COpenCV4Dlg::OnBnClickedButtonFit()
+{
+	// TODO: Add your control notification handler code here
+
+
+}
+
+
+
+void COpenCV4Dlg::OnClose()
+{
+	// TODO: Add your message handler code here and/or call default
+	showVideo = 0;
+	cap.release();
+	
+	m_startThread = 0;
+	
+	CDialogEx::OnClose();
+}
+
+
+
+
+
+
+
+
+
+
+
+void COpenCV4Dlg::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	int newX, newY;
+	CRect rect, rectParent;
+	CPoint p1;
+	CWnd* parent = GetDlgItem(IDC_IMG)->GetParent();
+	parent->GetWindowRect(&rectParent);
+	
+	p1.x = point.x;
+	p1.y = point.y;
+	
+	ClientToScreen(&p1);
+	
+	GetDlgItem(IDC_IMG)->GetWindowRect(&rect);
+	//GetDlgItem(1023)->
+	
+
+	//m_fileLoad.Format("newX=%d, newY=%d, p1.x=%d, p1.y=%d, point.x=%d, point.y=%d",newX, newY, p1.x, p1.y, point.x, point.y);
+	if ((p1.x >= rect.left) && (p1.x <= rect.right) && (p1.y <= rect.bottom) && (p1.y >= rect.top)) 
+		
+		m_fileLoad.Format("Inside rect.left=%d < X=%d < rect.right=%d | rect.top=%d < Y=%d < rect.bottom=%d", rect.left, p1.x, rect.right, rect.top, p1.y,   rect.bottom );
+	else	
+		m_fileLoad.Format("Outside rect.left=%d < X=%d < rect.right=%d | rect.top=%d < Y=%d < rect.bottom=%d", rect.left, p1.x, rect.right, rect.top, p1.y, rect.bottom);
+	//}
+//	else {
+	//	m_fileLoad = "Outside";
+
+	//}
+	
+
+	//m_fileLoad.Format("Parent.left = %d , rect.left = %d, Parent.right = %d , rect.right = %d", rectParent.left, rect.left, rectParent.right,  rect.right);
+	UpdateData(false);
+
+
+	CDialogEx::OnLButtonDblClk(nFlags, point);
 }
