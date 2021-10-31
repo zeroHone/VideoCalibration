@@ -3,8 +3,10 @@
 //
 
 #pragma once
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv2/videoio.hpp>
+#include <opencv2/tracking/tracking.hpp>
+#include <fstream>
 
 // COpenCV4Dlg dialog
 class COpenCV4Dlg : public CDialogEx
@@ -50,6 +52,8 @@ public:
 	void AsyncHandler(int Event, int x, int y, int flags);
 	cv::Point startPoint;
 	cv::Point endPoint;
+	cv::Point p1, p2, p3, p4;
+	int mouseX, mouseY;
 	bool drawRect;
 	cv::Mat ROI;
 	CSliderCtrl m_Tmin;
@@ -98,4 +102,20 @@ public:
 //	afx_msg void OnMoving(UINT fwSide, LPRECT pRect);
 //	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	cv::Rect bbox;
+	double cof_width, cof_height;
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	int m_LeftMouseDownP1, m_LeftMouseDownP2;
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	void TrackTemplate();
+	//cv::Ptr<cv::TrackerMIL> tracker;
+	//cv::Ptr<cv::TrackerGOTURN> tracker;
+	BOOL m_tracking;
+	afx_msg void OnBnClickedCheckTracking();
+	bool fileLoaded, trackingStarted;
+	void lineTrace();
+	float minValue,maxValue;
+	//std::ofstream MyFile;
+	bool nextFrame;
 };
