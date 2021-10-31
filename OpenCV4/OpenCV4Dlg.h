@@ -5,13 +5,13 @@
 #pragma once
 #include <opencv2/core/core.hpp>
 #include <opencv2/videoio.hpp>
-#include <opencv2/tracking/tracking.hpp>
+
 #include <fstream>
 
 // COpenCV4Dlg dialog
 class COpenCV4Dlg : public CDialogEx
 {
-// Construction
+	// Construction
 public:
 	COpenCV4Dlg(CWnd* pParent = nullptr);	// standard constructor
 
@@ -20,7 +20,7 @@ public:
 	enum { IDD = IDD_OPENCV4_DIALOG };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 
 
@@ -36,18 +36,18 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedDisp();
-	void DisplayImage(cv::Mat & img, int IDC);
-	CString TminVal,TmaxVal;
+	void DisplayImage(cv::Mat& img, int IDC);
+	CString TminVal, TmaxVal;
 	bool mShowImage;
 	afx_msg void OnBnClickedStop();
 	afx_msg void OnOptionsCalibrate();
 	cv::Mat mOriginalFrame, imageOption, lastFrame;
-	static void mouseEvent(int Event, int x, int y, int flags, void * param);
+	static void mouseEvent(int Event, int x, int y, int flags, void* param);
 
-	
-	
+
+
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	
+
 
 	void AsyncHandler(int Event, int x, int y, int flags);
 	cv::Point startPoint;
@@ -75,7 +75,7 @@ public:
 	afx_msg void OnBnClickedRadioEdges();
 	int m_imageType;
 	afx_msg void OnBnClickedButtonCalculate();
-	
+
 	double m_pixelValue;
 	CString m_tVal;
 	int thresholdValue;
@@ -98,9 +98,9 @@ public:
 	afx_msg void OnBnClickedButtonFit();
 	int m_startThread;
 	afx_msg void OnClose();
-//	afx_msg void OnMove(int x, int y);
-//	afx_msg void OnMoving(UINT fwSide, LPRECT pRect);
-//	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
+	//	afx_msg void OnMove(int x, int y);
+	//	afx_msg void OnMoving(UINT fwSide, LPRECT pRect);
+	//	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	cv::Rect bbox;
 	double cof_width, cof_height;
@@ -111,11 +111,11 @@ public:
 	void TrackTemplate();
 	//cv::Ptr<cv::TrackerMIL> tracker;
 	//cv::Ptr<cv::TrackerGOTURN> tracker;
-	BOOL m_tracking;
+	
 	afx_msg void OnBnClickedCheckTracking();
 	bool fileLoaded, trackingStarted;
 	void lineTrace();
-	float minValue,maxValue;
+	float minValue, maxValue;
 	//std::ofstream MyFile;
 	bool nextFrame;
 };

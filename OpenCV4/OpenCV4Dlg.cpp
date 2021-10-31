@@ -16,7 +16,7 @@
 
 #include <opencv2/core/ocl.hpp>
 #include <opencv2/core/ocl.hpp>
-#include <opencv2/tracking/tracking.hpp>
+
 
 
 
@@ -35,19 +35,19 @@ class CAboutDlg : public CDialogEx
 public:
 	CAboutDlg();
 
-// Dialog Data
+	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_ABOUTBOX };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	
+
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -60,7 +60,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-	
+
 END_MESSAGE_MAP()
 
 
@@ -76,10 +76,10 @@ COpenCV4Dlg::COpenCV4Dlg(CWnd* pParent /*=nullptr*/)
 	, m_refVal(_T(""))
 	, m_comboBox(_T(""))
 	, m_imageType(0)
-	
+
 	, m_tVal(_T(""))
 	, m_fileLoad(_T(""))
-	, m_tracking(FALSE)
+	
 {
 	//m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
@@ -103,14 +103,14 @@ void COpenCV4Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_TVAL, m_tVal);
 	DDX_Control(pDX, IDC_THRESH, m_thresholdValue);
 	DDX_Text(pDX, IDC_LOAD, m_fileLoad);
-	DDX_Check(pDX, IDC_CHECK1, m_tracking);
+	
 }
 
 BEGIN_MESSAGE_MAP(COpenCV4Dlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	
+
 	ON_BN_CLICKED(IDC_BUTTON1, &COpenCV4Dlg::OnBnClickedStop)
 	ON_COMMAND(ID_OPTIONS_CALIBRATE, &COpenCV4Dlg::OnOptionsCalibrate)
 	ON_WM_TIMER()
@@ -129,14 +129,14 @@ BEGIN_MESSAGE_MAP(COpenCV4Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON6, &COpenCV4Dlg::OnBnClickedStopVideo)
 	ON_BN_CLICKED(IDC_BUTTON4, &COpenCV4Dlg::OnBnClickedButtonFit)
 	ON_WM_CLOSE()
-//	ON_WM_MOVE()
-//	ON_WM_MOVING()
-//	ON_WM_WINDOWPOSCHANGED()
-ON_WM_LBUTTONDBLCLK()
-ON_WM_LBUTTONDOWN()
-ON_WM_MOUSEMOVE()
-ON_WM_LBUTTONUP()
-ON_BN_CLICKED(IDC_CHECK1, &COpenCV4Dlg::OnBnClickedCheckTracking)
+	//	ON_WM_MOVE()
+	//	ON_WM_MOVING()
+	//	ON_WM_WINDOWPOSCHANGED()
+	ON_WM_LBUTTONDBLCLK()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONUP()
+
 END_MESSAGE_MAP()
 
 
@@ -194,7 +194,7 @@ BOOL COpenCV4Dlg::OnInitDialog()
 	threshold2 = 180;
 	kernelSize = 3;
 	m_refVal = "20.0";
-	
+
 	threshValue = 0;
 	numberOfPoints = 0;
 	m_ctrlCombo.AddString("3");
@@ -212,7 +212,7 @@ BOOL COpenCV4Dlg::OnInitDialog()
 	mouseX = 0;
 	mouseY = 0;
 	//tracker = cv::TrackerGOTURN::create();
-	
+
 	fileLoaded = false;
 	minValue = 1000;
 	maxValue = 0;
@@ -259,7 +259,7 @@ void COpenCV4Dlg::OnPaint()
 
 		// Draw the icon
 		dc.DrawIcon(x, y, m_hIcon);
-		
+
 	}
 	else
 	{
@@ -290,9 +290,9 @@ HCURSOR COpenCV4Dlg::OnQueryDragIcon()
 void COpenCV4Dlg::OnBnClickedDisp()
 {
 
-	
 
-		
+
+
 }
 
 
@@ -409,7 +409,7 @@ void COpenCV4Dlg::OnBnClickedStop()
 	//cv::line(temp1, cv::Point(startPoint.x, startPoint.y), cv::Point(endPoint.x, endPoint.y), cv::Scalar(0, 0, 255),2);
 
 	//imshow("Image", temp1);
-	}
+}
 
 
 
@@ -439,13 +439,13 @@ void COpenCV4Dlg::OnOptionsCalibrate()
 		endPoint.y = startPoint.y;
 
 		cv::line(temp, cv::Point(startPoint.x, startPoint.y), cv::Point(endPoint.x, endPoint.y), cv::Scalar(0, 0, 255), 2);
-		if(showCircle) {
-			
+		if (showCircle) {
+
 			cv::circle(temp, cv::Point(startPoint.x, startPoint.y), 5, cv::Scalar(0, 255, 0), 2);
 
 			cv::circle(temp, cv::Point(endPoint.x, endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
 		}
-		
+
 		cv::namedWindow("Image");
 
 		cv::imshow("Image", temp);
@@ -460,7 +460,7 @@ void COpenCV4Dlg::OnOptionsCalibrate()
 
 
 
-void COpenCV4Dlg::mouseEvent(int Event, int x, int y, int flags, void * params)
+void COpenCV4Dlg::mouseEvent(int Event, int x, int y, int flags, void* params)
 {
 
 
@@ -468,9 +468,9 @@ void COpenCV4Dlg::mouseEvent(int Event, int x, int y, int flags, void * params)
 	COpenCV4Dlg* myClass = reinterpret_cast<COpenCV4Dlg*>(params);
 
 
-		myClass->AsyncHandler(Event, x, y, flags);
-		
-	
+	myClass->AsyncHandler(Event, x, y, flags);
+
+
 
 }
 
@@ -492,13 +492,13 @@ void COpenCV4Dlg::OnTimer(UINT_PTR nIDEvent)
 
 
 
-void COpenCV4Dlg::AsyncHandler(int Event, int x , int y, int flags)
+void COpenCV4Dlg::AsyncHandler(int Event, int x, int y, int flags)
 {
 	//// TODO: Add your implementation code here.
-	
-	
-	
-	cv::Mat frame,frameCanny;
+
+
+
+	cv::Mat frame, frameCanny;
 	imageOption.copyTo(frame);
 	int width, height;
 
@@ -561,12 +561,12 @@ void COpenCV4Dlg::AsyncHandler(int Event, int x , int y, int flags)
 
 	if (Event == cv::EVENT_LBUTTONDOWN) {
 		if (abs(startPoint.x - x) < 5.0 && abs(startPoint.y - y) < 5.0) {
-						circleMove = 1;
-							}
+			circleMove = 1;
+		}
 		else if (abs(endPoint.x - x) < 5.0 && abs(endPoint.y - y) < 5.0) {
-						circleMove = 2;
-						}
-	
+			circleMove = 2;
+		}
+
 	}
 
 	else if (Event == cv::EVENT_LBUTTONUP) {
@@ -574,8 +574,8 @@ void COpenCV4Dlg::AsyncHandler(int Event, int x , int y, int flags)
 	}
 
 	else if (Event == cv::EVENT_MOUSEMOVE) {
-			switch (circleMove) {
-		
+		switch (circleMove) {
+
 		case 1:
 			startPoint.x = x;
 			startPoint.y = y;
@@ -586,12 +586,12 @@ void COpenCV4Dlg::AsyncHandler(int Event, int x , int y, int flags)
 			break;
 		default:
 			break;
-	
-		
+
+
 		}
-	
+
 	}
-	
+
 
 	UpdateData(false);
 	if (circleMove) {
@@ -602,7 +602,7 @@ void COpenCV4Dlg::AsyncHandler(int Event, int x , int y, int flags)
 
 			cv::circle(frame, cv::Point(endPoint.x, endPoint.y), 5, cv::Scalar(0, 255, 0), 2);
 		}
-		
+
 
 
 		imshow("Image", frame);
@@ -615,9 +615,9 @@ void COpenCV4Dlg::AsyncHandler(int Event, int x , int y, int flags)
 void COpenCV4Dlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 {
 
-//	else {
-	//	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
-	//}
+	//	else {
+		//	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+		//}
 
 	CDialogEx::OnVScroll(nSBCode, nPos, pScrollBar);
 }
@@ -631,7 +631,7 @@ void COpenCV4Dlg::OnCbnSelchangeCombo1()
 	m_ctrlCombo.GetLBText(m_ctrlCombo.GetCurSel(), m_comboBox);
 	if (m_comboBox == "3" || m_comboBox == "5" || m_comboBox == "7" || m_comboBox == "9") {
 		kernelSize = atoi(m_comboBox);
-	
+
 	}
 }
 
@@ -642,21 +642,21 @@ void COpenCV4Dlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	cv::Mat frameCanny;
 	// TODO: Add your message handler code here and/or call default
 	if (pScrollBar == (CScrollBar*)&m_Tmin) {
-		threshold1 =  m_Tmin.GetPos();
+		threshold1 = m_Tmin.GetPos();
 		TminVal.Format(_T("%.1f"), round(threshold1));
 
 	}
 	else if (pScrollBar == (CScrollBar*)&m_Tmax) {
-		threshold2 =  m_Tmax.GetPos();
+		threshold2 = m_Tmax.GetPos();
 		TmaxVal.Format(_T("%.1f"), round(threshold2));
 
 	}
 	else if (pScrollBar == (CScrollBar*)&m_thresholdValue) {
-	
+
 		thresholdValue = m_thresholdValue.GetPos();
 		m_tVal.Format(_T("%d"), thresholdValue);
-	
-	
+
+
 	}
 
 	UpdateData(false);
@@ -668,7 +668,7 @@ void COpenCV4Dlg::OnBnClickedRadioOriginal()
 {
 	// TODO: Add your control notification handler code here
 
-	
+
 	UpdateData(true);
 
 }
@@ -695,14 +695,14 @@ void COpenCV4Dlg::OnBnClickedButtonCalculate()
 	std::regex number("[1-9][0-9]*.[0-9]*");
 
 	if (std::regex_match(inpStr, number)) {
-	
-	lengthLine = sqrt(pow((p1.x - p3.x), 2.0) + pow((p1.y - p3.y), 2.0));// pixels
-	refVal = atof(m_refVal);
-	m_pixelValue = (floor((refVal / lengthLine)*100.0))/100;
-	m_areaValue.Format("%.2f", m_pixelValue);
-	UpdateData(false);
 
-	
+		lengthLine = sqrt(pow((p1.x - p3.x), 2.0) + pow((p1.y - p3.y), 2.0));// pixels
+		refVal = atof(m_refVal);
+		m_pixelValue = (floor((refVal / lengthLine) * 100.0)) / 100;
+		m_areaValue.Format("%.2f", m_pixelValue);
+		UpdateData(false);
+
+
 	}
 
 
@@ -782,23 +782,23 @@ void COpenCV4Dlg::OnBnClickedLoadVideo() // Load Videos
 			cap >> frame;
 			if (!frame.empty())
 				frame.copyTo(lastFrame);
-		startPoint.x = round(frame.cols / 2 - 50);
-		endPoint.x = round(frame.cols / 2 + 50);
-		startPoint.y = round(frame.rows / 2);
-		endPoint.y = startPoint.y;
+			startPoint.x = round(frame.cols / 2 - 50);
+			endPoint.x = round(frame.cols / 2 + 50);
+			startPoint.y = round(frame.rows / 2);
+			endPoint.y = startPoint.y;
 
-			
-			p1.x= round(frame.cols / 2 - 50);
-			p1.y= round(frame.rows / 2 - 50);
-			
+
+			p1.x = round(frame.cols / 2 - 50);
+			p1.y = round(frame.rows / 2 - 50);
+
 			p2.x = round(frame.cols / 2 + 50);
 			p2.y = p1.y;
-			
+
 			p3.x = p1.x;
 			p3.y = round(frame.rows / 2 + 50);
 
 			p4.x = p2.x;
-			p4.y= round(frame.rows / 2 + 50);
+			p4.y = round(frame.rows / 2 + 50);
 
 			bbox.x = p1.x;
 			bbox.y = p1.y;
@@ -807,21 +807,21 @@ void COpenCV4Dlg::OnBnClickedLoadVideo() // Load Videos
 			GetDlgItem(IDC_IMG)->GetClientRect(&rect);
 			cof_width = static_cast<double>(frame.cols) / static_cast<double>(rect.Width());
 			cof_height = static_cast<double>(frame.rows) / static_cast<double>(rect.Height());
-//			bbox = cv::selectROI(frame);
-//			p1.x = bbox.x;
-//			p1.y= bbox.y;
-////
-//			p2.x = p1.x + bbox.width;
-//			p2.y = p1.y;
-////
-//			p3.x = p1.x;
-//			p3.y = p1.y + bbox.height;
-//
-//			p4.x = p1.x + bbox.width;
-//			p4.y= p1.y + bbox.height;
+			//			bbox = cv::selectROI(frame);
+			//			p1.x = bbox.x;
+			//			p1.y= bbox.y;
+			////
+			//			p2.x = p1.x + bbox.width;
+			//			p2.y = p1.y;
+			////
+			//			p3.x = p1.x;
+			//			p3.y = p1.y + bbox.height;
+			//
+			//			p4.x = p1.x + bbox.width;
+			//			p4.y= p1.y + bbox.height;
 			DisplayImage(frame, IDC_IMG);
 			fileLoaded = true;
-			m_tracking = false;
+			
 			trackingStarted = false;
 		}
 	}
@@ -845,8 +845,8 @@ void COpenCV4Dlg::OnBnClickedButton5()// Start
 
 	//obj->cap >> frame;
 	//cv::imshow("Image", frame);
-	
-	
+
+
 
 }
 
@@ -864,123 +864,123 @@ UINT COpenCV4Dlg::threadProc(LPVOID param)
 	// TODO: Add your implementation code here.
 	COpenCV4Dlg* obj = (COpenCV4Dlg*)param;
 	cv::Rect bbox1(50, 60, 100, 100);
-	bool ok=false;
+	bool ok = false;
 	cv::Mat temp1, temp2;
 
-			while (obj->m_startThread) {
-				
-				if (obj->showVideo && obj->cap.isOpened()) {
+	while (obj->m_startThread) {
 
-					obj->cap >> obj->lastFrame;
-				}
+		if (obj->showVideo && obj->cap.isOpened()) {
 
-				if (~obj->lastFrame.empty() && obj->fileLoaded) {
+			obj->cap >> obj->lastFrame;
+		}
 
-
-					if (obj->m_imageType == 1) {
-						cv::Canny(obj->lastFrame, temp1, obj->threshold1, obj->threshold2, obj->kernelSize);
-						cv::cvtColor(temp1, obj->imageOption, cv::COLOR_GRAY2BGR);
+		if (~obj->lastFrame.empty() && obj->fileLoaded) {
 
 
-						//		cv::threshold(frame, outPut, threshold2, 255, CV_THRESH_BINARY);
-
-					}
-					else if (obj->m_imageType == 2) {
-
-						cv::cvtColor(obj->lastFrame, temp1, cv::COLOR_BGR2GRAY);
-						cv::threshold(temp1, temp2, obj->thresholdValue, 255, cv::THRESH_BINARY);
-						cv::cvtColor(temp2, obj->imageOption, cv::COLOR_GRAY2BGR);
+			if (obj->m_imageType == 1) {
+				cv::Canny(obj->lastFrame, temp1, obj->threshold1, obj->threshold2, obj->kernelSize);
+				cv::cvtColor(temp1, obj->imageOption, cv::COLOR_GRAY2BGR);
 
 
+				//		cv::threshold(frame, outPut, threshold2, 255, CV_THRESH_BINARY);
 
-					}
-					else {
-						obj->lastFrame.copyTo(obj->imageOption);
-
-					}
-
-
-
-
-					obj->imageOption.copyTo(temp1);
-
-
-
-
-
-
-					if (!obj->lastFrame.empty() && obj->fileLoaded) {
-						//cv::circle(temp2, cv::Point(obj->mouseX, obj->mouseY), 10, cv::Scalar(110, 58, 255), 2);
-						
-
-						
-						
-						//ok = obj->tracker->update(obj->lastFrame, obj->bbox);
-						obj->p1.x = obj->bbox.x;
-						obj->p1.y = obj->bbox.y;
-
-						obj->p2.x = obj->bbox.x+obj->bbox.width;
-						obj->p2.y = obj->bbox.y;
-
-						obj->p3.x = obj->bbox.x;
-						obj->p3.y = obj->bbox.y+obj->bbox.height;
-
-						obj->p4.x = obj->bbox.x+obj->bbox.width;
-						obj->p4.y = obj->bbox.y+obj->bbox.height;
-
-						CString str1;
-						str1.Format("min= %.1f, max= %.1f , value=%.2f", obj->minValue, obj->maxValue, obj->m_pixelValue);
-
-						std::string inpStr(str1.GetBuffer(), str1.GetLength());
-
-						if (obj->minValue != 0 && obj->maxValue != 1000)
-							cv::putText(temp1, inpStr, cv::Point(  10, 50), cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(0, 255, 0), 2, false);
-
-							cv::rectangle(temp1, obj->bbox, cv::Scalar(0, 255, 0), 2, 1);
-							cv::circle(temp1, cv::Point(obj->p1.x, obj->p1.y), 5, cv::Scalar(0, 0, 255), 2);
-							cv::circle(temp1, cv::Point(obj->p4.x, obj->p4.y), 5, cv::Scalar(0, 0, 255), 2);
-
-							if (obj->nextFrame && !obj->lastFrame.empty()) {
-								obj->lineTrace();
-								
-								
-							}
-
-				
-
-
-					
-						obj->DisplayImage(temp1, 1023);
-					}
-
-
-
-				}
-				if (!obj->lastFrame.empty() && obj->m_tracking && !obj->trackingStarted) {
-					//obj->tracker->init(obj->lastFrame, obj->bbox);
-					
-					obj->trackingStarted = true;
-				}
-			Sleep(50);
-			
 			}
-	
-	
-					
-					
-					return TRUE;
-	
-			
-			
-			
+			else if (obj->m_imageType == 2) {
+
+				cv::cvtColor(obj->lastFrame, temp1, cv::COLOR_BGR2GRAY);
+				cv::threshold(temp1, temp2, obj->thresholdValue, 255, cv::THRESH_BINARY);
+				cv::cvtColor(temp2, obj->imageOption, cv::COLOR_GRAY2BGR);
+
+
+
 			}
+			else {
+				obj->lastFrame.copyTo(obj->imageOption);
+
+			}
+
+
+
+
+			obj->imageOption.copyTo(temp1);
+
+
+
+
+
+
+			if (!obj->lastFrame.empty() && obj->fileLoaded) {
+				//cv::circle(temp2, cv::Point(obj->mouseX, obj->mouseY), 10, cv::Scalar(110, 58, 255), 2);
+
+
+
+
+				//ok = obj->tracker->update(obj->lastFrame, obj->bbox);
+				obj->p1.x = obj->bbox.x;
+				obj->p1.y = obj->bbox.y;
+
+				obj->p2.x = obj->bbox.x + obj->bbox.width;
+				obj->p2.y = obj->bbox.y;
+
+				obj->p3.x = obj->bbox.x;
+				obj->p3.y = obj->bbox.y + obj->bbox.height;
+
+				obj->p4.x = obj->bbox.x + obj->bbox.width;
+				obj->p4.y = obj->bbox.y + obj->bbox.height;
+
+				CString str1;
+				str1.Format("min= %.1f, max= %.1f , value=%.2f", obj->minValue, obj->maxValue, obj->m_pixelValue);
+
+				std::string inpStr(str1.GetBuffer(), str1.GetLength());
+
+				if (obj->minValue != 0 && obj->maxValue != 1000)
+					cv::putText(temp1, inpStr, cv::Point(10, 50), cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(0, 255, 0), 2, false);
+
+				cv::rectangle(temp1, obj->bbox, cv::Scalar(0, 255, 0), 2, 1);
+				cv::circle(temp1, cv::Point(obj->p1.x, obj->p1.y), 5, cv::Scalar(0, 0, 255), 2);
+				cv::circle(temp1, cv::Point(obj->p4.x, obj->p4.y), 5, cv::Scalar(0, 0, 255), 2);
+
+				if (obj->nextFrame && !obj->lastFrame.empty()) {
+					obj->lineTrace();
+
+
+				}
+
+
+
+
+
+				obj->DisplayImage(temp1, 1023);
+			}
+
+
+
+		}
+		if (!obj->lastFrame.empty() &&   !obj->trackingStarted) {
+			//obj->tracker->init(obj->lastFrame, obj->bbox);
+
+			obj->trackingStarted = true;
+		}
+		Sleep(50);
+
+	}
+
+
+
+
+	return TRUE;
+
+
+
+
+}
 
 
 
 void COpenCV4Dlg::OnBnClickedButtonFit()
 {
 	// TODO: Add your control notification handler code here
-	
+
 	//CString str1, str2;
 	nextFrame = true;
 	/*
@@ -999,9 +999,9 @@ void COpenCV4Dlg::OnClose()
 	// TODO: Add your message handler code here and/or call default
 	showVideo = 0;
 	cap.release();
-	
+
 	m_startThread = 0;
-	
+
 	CDialogEx::OnClose();
 }
 
@@ -1026,7 +1026,7 @@ void COpenCV4Dlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//parent->GetWindowRect(&rectParent);
 	ptemp1.x = point.x;
 	ptemp1.y = point.y;
-	
+
 	ClientToScreen(&ptemp1);
 
 
@@ -1049,8 +1049,8 @@ void COpenCV4Dlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 		mouseY = 1;
 	else
 		mouseY = temp2;
-	
-	
+
+
 	/*
 	CString str1, str2;
 	str1.Format("globalPoint.X=%d globalPoint.y=%d", globalPoint.x, globalPoint.y);
@@ -1069,7 +1069,7 @@ void COpenCV4Dlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	//	m_fileLoad = "Outside";
 
 	//}
-	
+
 	//m_fileLoad.Format("Parent.left = %d , rect.left = %d, Parent.right = %d , rect.right = %d", rectParent.left, rect.left, rectParent.right,  rect.right);
 	//UpdateData(false);
 
@@ -1085,38 +1085,38 @@ void COpenCV4Dlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CPoint ptemp1;
 
 
-		//CWnd* parent = GetDlgItem(IDC_IMG)->GetParent();
-	//parent->GetWindowRect(&rectParent);
-		ptemp1.x = point.x;
-		ptemp1.y = point.y;
-		ClientToScreen(&ptemp1);
-		GetDlgItem(IDC_IMG)->GetWindowRect(&rect);
-		//**************************
-		temp1 = static_cast<int>(cof_width * (ptemp1.x - rect.left));
-		if (temp1 > lastFrame.cols)
-			mouseX = lastFrame.cols;
-		else if (temp1 < 0)
-			mouseX = 1;
-		else
-			mouseX = temp1;
+	//CWnd* parent = GetDlgItem(IDC_IMG)->GetParent();
+//parent->GetWindowRect(&rectParent);
+	ptemp1.x = point.x;
+	ptemp1.y = point.y;
+	ClientToScreen(&ptemp1);
+	GetDlgItem(IDC_IMG)->GetWindowRect(&rect);
+	//**************************
+	temp1 = static_cast<int>(cof_width * (ptemp1.x - rect.left));
+	if (temp1 > lastFrame.cols)
+		mouseX = lastFrame.cols;
+	else if (temp1 < 0)
+		mouseX = 1;
+	else
+		mouseX = temp1;
 
-		temp2 = static_cast<int>(cof_height * (ptemp1.y - rect.top));
+	temp2 = static_cast<int>(cof_height * (ptemp1.y - rect.top));
 
-		if (temp2 > lastFrame.rows)
-			mouseY = lastFrame.cols;
-		else if (temp2 < 0)
-			mouseY = 1;
-		else
-			mouseY = temp2;
+	if (temp2 > lastFrame.rows)
+		mouseY = lastFrame.cols;
+	else if (temp2 < 0)
+		mouseY = 1;
+	else
+		mouseY = temp2;
 
-	if (sqrt(pow((mouseX - p1.x), 2) + pow((mouseY - p1.y), 2))<5) {
+	if (sqrt(pow((mouseX - p1.x), 2) + pow((mouseY - p1.y), 2)) < 5) {
 		m_LeftMouseDownP1 = 1;
-		
+
 	}
-	else if (sqrt(pow((mouseX - p4.x), 2) + pow((mouseY - p4.y), 2))<5) {
+	else if (sqrt(pow((mouseX - p4.x), 2) + pow((mouseY - p4.y), 2)) < 5) {
 
 		m_LeftMouseDownP2 = 1;
-		
+
 	}
 
 
@@ -1130,45 +1130,45 @@ void COpenCV4Dlg::OnMouseMove(UINT nFlags, CPoint point)
 	int temp1, temp2;
 	CRect rect;
 	CPoint ptemp1;
-	
-	
-		//CWnd* parent = GetDlgItem(IDC_IMG)->GetParent();
-	//parent->GetWindowRect(&rectParent);
-		ptemp1.x = point.x;
-		ptemp1.y = point.y;
-		ClientToScreen(&ptemp1);
-		GetDlgItem(IDC_IMG)->GetWindowRect(&rect);
-		//**************************
-		temp1 = static_cast<int>(cof_width * (ptemp1.x - rect.left));
-		if (temp1 > lastFrame.cols)
-			mouseX = lastFrame.cols;
-		else if (temp1 < 0)
-			mouseX = 1;
-		else
-			mouseX = temp1;
-
-		temp2 = static_cast<int>(cof_height * (ptemp1.y - rect.top));
-
-		if (temp2 > lastFrame.rows)
-			mouseY = lastFrame.cols;
-		else if (temp2 < 0)
-			mouseY = 1;
-		else
-			mouseY = temp2;
-	
-	if(m_LeftMouseDownP1){
-	p1.x = mouseX;
-	p1.y = mouseY;
-	
-	p2.x = p1.x + bbox.width;
-	p2.y = p1.y;
-
-	p3.x = p1.x;
-	p3.y = p1.y + bbox.height;
 
 
-	p4.x = p1.x + bbox.width;
-	p4.y = p1.y + bbox.height;
+	//CWnd* parent = GetDlgItem(IDC_IMG)->GetParent();
+//parent->GetWindowRect(&rectParent);
+	ptemp1.x = point.x;
+	ptemp1.y = point.y;
+	ClientToScreen(&ptemp1);
+	GetDlgItem(IDC_IMG)->GetWindowRect(&rect);
+	//**************************
+	temp1 = static_cast<int>(cof_width * (ptemp1.x - rect.left));
+	if (temp1 > lastFrame.cols)
+		mouseX = lastFrame.cols;
+	else if (temp1 < 0)
+		mouseX = 1;
+	else
+		mouseX = temp1;
+
+	temp2 = static_cast<int>(cof_height * (ptemp1.y - rect.top));
+
+	if (temp2 > lastFrame.rows)
+		mouseY = lastFrame.cols;
+	else if (temp2 < 0)
+		mouseY = 1;
+	else
+		mouseY = temp2;
+
+	if (m_LeftMouseDownP1) {
+		p1.x = mouseX;
+		p1.y = mouseY;
+
+		p2.x = p1.x + bbox.width;
+		p2.y = p1.y;
+
+		p3.x = p1.x;
+		p3.y = p1.y + bbox.height;
+
+
+		p4.x = p1.x + bbox.width;
+		p4.y = p1.y + bbox.height;
 
 
 
@@ -1212,10 +1212,10 @@ void COpenCV4Dlg::TrackTemplate()
 {
 	// TODO: Add your implementation code here.
 	using namespace cv;
-	
+
 	//tracker = cv::TrackerKCF::create();
 	//Tracke
-	
+
 
 
 
@@ -1240,7 +1240,7 @@ void COpenCV4Dlg::lineTrace()
 
 		cv::cvtColor(lastFrame, temp1, cv::COLOR_BGR2GRAY);
 		cv::threshold(temp1, temp2, thresholdValue, 255, cv::THRESH_BINARY);
-		
+
 		int yMiddle = static_cast<int>(round(abs(p4.y - p1.y)/2));
 		int xMiddle = static_cast<int>(round(abs(p4.x - p1.x) / 2));
 
@@ -1259,30 +1259,30 @@ void COpenCV4Dlg::lineTrace()
 		int yPixel;
 
 		int x = x1RightLimit;
-		
+
 		while (x > x1LeftLimit) {
-			
-			
+
+
 			if (p3.x != p1.x) {
 				alpha = (p3.y - p1.y) / (p3.x - p1.x);
-				
+
 				beta = p3.y - alpha * p1.x;
-				
+
 				yPixel = x * alpha + beta;
 			}
 			else {
 				yPixel = p1.y;
 			}
-			
+
 			//MyFile << "yPixel= " << yPixel << "x= " << x << std::endl;
-				
+
 			if (img(x, yPixel) == pixelMiddleValue) {
 				x--;
 			}
 			else {
 				break;
 			}
-						
+
 		}
 
 		p1.x = x;
@@ -1315,8 +1315,8 @@ void COpenCV4Dlg::lineTrace()
 
 		}
 		p3.x = x;
-		
-		
+
+
 		//MyFile.close();
 
 		*/
